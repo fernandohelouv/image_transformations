@@ -33,6 +33,8 @@ This repository contains a Python script that allows you to copy an image and ap
 - Inverse Transformation: Inverts the colors of the image.
 - Umbral Transformation: Converts the image to black and white based on a threshold value.
 - Grayscale Transformation: Converts the image to grayscale.
+- Equalization: Enchances the image contrast using the equialization algorithm.
+- Convolution Filters: Removes noise from the input image using various convolution filters, such as media and median filters.
 
 ## Output
 
