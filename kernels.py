@@ -2,12 +2,13 @@ import cv2
 import numpy as np
 
 
-def converto_to_grayscale(image):
+def converto_to_grayscale(image, save=False):
     # Convert the image to grayscale
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    # Save the grayscale image
-    cv2.imwrite("output/grayscale.bmp", gray_image)
+    if save:
+        # Save the grayscale image
+        cv2.imwrite("edge_detection_output/grayscale.bmp", gray_image)
 
     return gray_image
 
@@ -203,27 +204,28 @@ def apply_kirsch(image, pixel_by_pixel=False):
     return result_90, result_0, result_45, result_minus_45
 
 
-# Load the image
-IMAGE_PATH = "input/domino.jpg"
-original_image = cv2.imread(IMAGE_PATH)
+if __name__ == "__main__":
+    # Load the image
+    IMAGE_PATH = "input/domino.jpg"
+    original_image = cv2.imread(IMAGE_PATH)
 
-# Convert the image to grayscale
-image = converto_to_grayscale(original_image)
+    # Convert the image to grayscale
+    image = converto_to_grayscale(original_image)
 
-# save the grayscale image
-# cv2.imwrite("edge_detection_output/grayscale.bmp", image)
+    # save the grayscale image
+    # cv2.imwrite("edge_detection_output/grayscale.bmp", image)
 
-# Apply the kernels
-prewitt_90, prewitt_0, prewitt_45, prewitt_minus_45 = apply_prewitt(image)
+    # Apply the kernels
+    prewitt_90, prewitt_0, prewitt_45, prewitt_minus_45 = apply_prewitt(image)
 
-sobel_90, sobel_0 = apply_sobel(image)
+    sobel_90, sobel_0 = apply_sobel(image)
 
-kirsch_90, kirsch_0, kirsch_45, kirsch_minus_45 = apply_kirsch(image)
+    kirsch_90, kirsch_0, kirsch_45, kirsch_minus_45 = apply_kirsch(image)
 
-print("Done!")
+    print("Done!")
 
-# Canny edge detection
-# canny_output = cv2.Canny(prewitt_0, 80, 150)
+    # Canny edge detection
+    # canny_output = cv2.Canny(prewitt_0, 80, 150)
 
-# Save the results
-# cv2.imwrite("edge_detection_output/canny.bmp", canny_output)
+    # Save the results
+    # cv2.imwrite("edge_detection_output/canny.bmp", canny_output)
