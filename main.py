@@ -187,6 +187,6 @@ def enhance_contrast(image_url: str = "./input/image.jpg") -> None:
     new_image.show()
 
 
-plot_histogram(get_histogram(image_url="./input/image.jpg"))
+# plot_histogram(get_histogram(image_url="./input/image.jpg"))
 # enhance_contrast(image_url="./input/image.jpg")
-# copy_image("./input/image.jpg", transformation="grayscale")
+copy_image("input/vatican_night.jpg", transformation="grayscale")
