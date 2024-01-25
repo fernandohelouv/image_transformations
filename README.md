@@ -7,6 +7,7 @@ This repository contains a Python script that allows you to copy an image and ap
 - Python 3.x
 - PIL (Python Imaging Library)
 - matplotlib
+- opencv-python
 
 ## Usage
 
@@ -44,7 +45,7 @@ The transformed images will be saved in the `output` directory. The histogram of
 
 This module provides functionality to apply convolutional kernels to images, which is a fundamental operation in many image processing tasks. The module supports several types of kernels including Prewitt, Sobel, and Kirsch.
 
-### Usage
+### Kernels Usage
 
 The module provides the following functions:
 
@@ -80,6 +81,24 @@ print("Done!")
 ```
 
 This will apply the Prewitt, Sobel, and Kirsch operators to the image and save the results. The processed images can be found in the `edge_detection_output` directory.
+
+## Fourier Transform and Frequency Domain Filtering
+
+This Python script demonstrates the application of Fourier Transform and Frequency Domain Filtering on an image. It uses the `numpy` and `cv2` libraries to perform these operations.
+
+### How it works
+
+1. The script first reads an image file named `figuras.bmp` in grayscale mode.
+2. It then applies the Fourier Transform to the image and shifts the zero-frequency component to the center of the spectrum.
+3. The script displays the original image and the logarithm of the absolute value of the Fourier Transform.
+4. It then creates an ideal low-pass filter and an ideal high-pass filter in the frequency domain.
+5. The script applies these filters to the Fourier Transform of the image, effectively removing high-frequency (for the low-pass filter) or low-frequency (for the high-pass filter) components.
+6. The script displays the magnitude spectrum of the filtered Fourier Transforms.
+7. Finally, it applies the inverse Fourier Transform to the filtered images, converts them back to the spatial domain, and displays the filtered images.
+
+## Fourier Filters Usage
+
+Run the script with the command `python fourier.py`. The script will display the original image, the Fourier Transform, the filters, and the filtered images in separate windows. Press any key to close the windows and end the script.
 
 ## Licence
 
