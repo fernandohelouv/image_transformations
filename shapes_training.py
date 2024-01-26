@@ -80,6 +80,7 @@ def get_clasify_data(img_path: str = "shapes/square45.png"):
 
     # Save the results to a file
     save_path = img_path.replace(".png", ".pkl")
+    save_path = save_path.replace("shapes", "shapes_data")
     with open(save_path, "wb") as f:
         data = {"r": r, "dft_r": dft_r}
         pickle.dump(data, f)
