@@ -17,6 +17,35 @@ def inverse_transformation(pixel: list) -> list:
     return 255 - pixel[0], 255 - pixel[1], 255 - pixel[2]
 
 
+# ✅
+def apply_inverse_transformation(image_url: str):
+    """Apply inverse color tranformation to a given pixel.
+
+    Args:
+        pixel (list): RGB values for a given pixel.
+
+    Returns:
+        list: New RGB inversed pixel values.
+    """
+    # Applying inverse transformation
+    image = Image.open(image_url)
+
+    # Get the image's width and height
+    width, height = image.size
+
+    # Create a new image with the same size
+    new_image = Image.new("RGB", (width, height))
+
+    for x in range(width):
+        for y in range(height):
+            # Get the pixel at the current position
+            pixel = image.getpixel((x, y))
+            transformed_pixel = tuple(255 - p for p in pixel)
+            new_image.putpixel((x, y), transformed_pixel)
+
+    return new_image
+
+
 def umbral_transformation(pixel: list, threshold: int = 100) -> list:
     """Apply umbral transformation to a given pixel.
 
@@ -28,6 +57,38 @@ def umbral_transformation(pixel: list, threshold: int = 100) -> list:
     """
     # Applying umbral transformation
     return tuple(0 if p < threshold else 255 for p in pixel)
+
+
+# ✅
+def apply_umbral_transformation(image_url: str, threshold: int = 100):
+    """Apply umbral transformation to a given pixel.
+
+    Args:
+        pixel (list): RGB values for a given pixel.
+
+    Returns:
+        list: New RGB umbral tranformed pixel values.
+    """
+    # Applying umbral transformation
+    image = Image.open(image_url)
+
+    # Turn the image into grayscale
+    image = turn_to_grayscale(image_url)
+
+    # Get the image's width and height
+    width, height = image.size
+
+    # Create a new image with the same size
+    new_image = Image.new("RGB", (width, height))
+
+    for x in range(width):
+        for y in range(height):
+            # Get the pixel at the current position
+            pixel = image.getpixel((x, y))
+            transformed_pixel = tuple(0 if p < threshold else 255 for p in pixel)
+            new_image.putpixel((x, y), transformed_pixel)
+
+    return new_image
 
 
 def grayscale_transformation(pixel: list) -> list:
@@ -42,6 +103,31 @@ def grayscale_transformation(pixel: list) -> list:
     # Applying grayscale transformation
     luminance = int(0.299 * pixel[0] + 0.587 * pixel[1] + 0.114 * pixel[2])
     return luminance, luminance, luminance
+
+
+# ✅
+def turn_to_grayscale(image_url: str) -> None:
+    # Load the image
+    image = Image.open(image_url)
+
+    # Get the image's width and height
+    x, y = image.size
+
+    # Create a new image with the same size
+    new_image = Image.new("RGB", (x, y))
+
+    for i in range(x):
+        for j in range(y):
+            # Get the pixel at the current position
+            pixel = image.getpixel((i, j))
+
+            # Get the luminance of the pixel
+            luminance = int(0.299 * pixel[0] + 0.587 * pixel[1] + 0.114 * pixel[2])
+
+            # Set the new pixel
+            new_image.putpixel((i, j), (luminance, luminance, luminance))
+
+    return new_image
 
 
 def copy_image(
@@ -87,6 +173,7 @@ def copy_image(
     new_image.show()
 
 
+# ✅
 def get_histogram(image_url: str) -> list:
     """This  returns the list of 256 elements that represent the histogram of the image.
 
@@ -99,6 +186,37 @@ def get_histogram(image_url: str) -> list:
 
     # Open the image
     image = Image.open(image_url)
+
+    # Get the image's width and height
+    width, height = image.size
+
+    # Create a list of 256 elements
+    histogram = [0] * 256
+
+    for x in range(width):
+        for y in range(height):
+            # Get the pixel at the current position
+            pixel = image.getpixel((x, y))
+
+            # Get the luminance of the pixel
+            luminance = int(0.299 * pixel[0] + 0.587 * pixel[1] + 0.114 * pixel[2])
+
+            # Increment the value in the histogram
+            histogram[luminance] += 1
+
+    return histogram
+
+
+# ✅
+def get_histogram_from_file(image) -> list:
+    """This  returns the list of 256 elements that represent the histogram of the image.
+
+    Args:
+        image: image.
+
+    Returns:
+        list: list of values that represent the histogram of the image.
+    """
 
     # Get the image's width and height
     width, height = image.size
@@ -135,6 +253,7 @@ def plot_histogram(histogram: list) -> None:
     plt.show()
 
 
+# ✅
 def enhance_contrast(image_url: str = "./input/image.jpg") -> None:
     """This function enhances the contrast of an image.
 
@@ -184,9 +303,6 @@ def enhance_contrast(image_url: str = "./input/image.jpg") -> None:
     new_image.save("./output/enhanced_image.jpg")
 
     # Show the new image
-    new_image.show()
+    # new_image.show()
 
-
-# plot_histogram(get_histogram(image_url="./input/image.jpg"))
-# enhance_contrast(image_url="./input/image.jpg")
-copy_image("input/vatican_night.jpg", transformation="grayscale")
+    return new_image
