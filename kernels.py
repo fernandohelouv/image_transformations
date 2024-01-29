@@ -2,7 +2,10 @@ import cv2
 import numpy as np
 
 
-def converto_to_grayscale(image, save=False):
+def converto_to_grayscale(url, save=False):
+    # Load the image
+    image = cv2.imread(url)
+
     # Convert the image to grayscale
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
@@ -13,7 +16,7 @@ def converto_to_grayscale(image, save=False):
     return gray_image
 
 
-def apply_filter(image, kernel):
+def apply_filter(url, kernel):
     """This function applies a kernel to an image, pixel by pixel.
     It only works with 3x3 kernels.
 
@@ -24,6 +27,8 @@ def apply_filter(image, kernel):
     Returns:
         _type_: _description_
     """
+    # Load the image
+    image = cv2.imread(url)
 
     # Create a new image to store the result
     result = np.zeros(image.shape, dtype=np.uint8)
@@ -36,7 +41,10 @@ def apply_filter(image, kernel):
     return result
 
 
-def apply_prewitt(image, pixel_by_pixel=False):
+def apply_prewitt(url, pixel_by_pixel=False):
+    # Load the image
+    image = cv2.imread(url)
+
     gain = 0
 
     # Define the kernels
@@ -95,10 +103,19 @@ def apply_prewitt(image, pixel_by_pixel=False):
     # Save the results
     cv2.imwrite("edge_detection_output/prewitt_combined.bmp", result)
 
-    return result_90, result_0, result_45, result_minus_45
+    dict_result = {
+        "90": result_90,
+        "0": result_0,
+        "45": result_45,
+        "-45": result_minus_45,
+    }
+    return dict_result
 
 
-def apply_sobel(image, pixel_by_pixel=False):
+def apply_sobel(url, pixel_by_pixel=False):
+    # Load the image
+    image = cv2.imread(url)
+
     gain = 0
     # Define the kernels
     kernel_90 = np.array(
@@ -138,10 +155,15 @@ def apply_sobel(image, pixel_by_pixel=False):
     # Save the results
     cv2.imwrite("edge_detection_output/sobel_combined.bmp", result)
 
-    return result_90, result_0
+    dict_result = {"90": result_90, "0": result_0}
+
+    return dict_result
 
 
-def apply_kirsch(image, pixel_by_pixel=False):
+def apply_kirsch(url, pixel_by_pixel=False):
+    # Load the image
+    image = cv2.imread(url)
+
     gain = 2
     # Define the kernels
     kernel_0 = np.array(
@@ -201,7 +223,14 @@ def apply_kirsch(image, pixel_by_pixel=False):
     # Save the results
     cv2.imwrite("edge_detection_output/kirsch_combined.bmp", result)
 
-    return result_90, result_0, result_45, result_minus_45
+    dict_result = {
+        "90": result_90,
+        "0": result_0,
+        "45": result_45,
+        "-45": result_minus_45,
+    }
+
+    return dict_result
 
 
 if __name__ == "__main__":
