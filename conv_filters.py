@@ -4,6 +4,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 
 
+# ✅
 def conv_filter(
     image_url: str = "./input/noisy_image.png",
     output_url: str = "./output/conv_filter_output.jpg",
@@ -45,9 +46,11 @@ def conv_filter(
     new_image.save(output_url)
 
     # Display the images
-    show_images(image_url, output_url, title="Convolution filter")
+    # show_images(image_url, output_url, title="Convolution filter")
+    return new_image
 
 
+# ✅
 def median_filter(
     image_url: str = "./input/noisy_image.png",
     output_url: str = "./output/median_filter_output.jpg",
@@ -89,7 +92,8 @@ def median_filter(
     new_image.save(output_url)
 
     # Display the images
-    show_images(image_url, output_url, title="Median filter")
+    # show_images(image_url, output_url, title="Median filter")
+    return new_image
 
 
 def show_images(
@@ -130,7 +134,3 @@ def show_images(
 
     # Show the figure
     plt.show()
-
-
-conv_filter()
-# median_filter()
