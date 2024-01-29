@@ -22,6 +22,7 @@ def get_histogram(image):
     return histogram
 
 
+# ✅
 def equalization(image_url: str = "./input/garra2.bmp") -> None:
     """Equalize the histogram of an image.
 
@@ -61,7 +62,6 @@ def equalization(image_url: str = "./input/garra2.bmp") -> None:
     new_image.save("./output/equalized_image.jpg")
 
     # Show the new image
-    new_image.show()
+    # new_image.show()
 
-
-equalization()
+    return new_image
