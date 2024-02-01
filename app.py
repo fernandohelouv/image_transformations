@@ -1,190 +1,125 @@
 """
-# My first app
-Here's our first attempt at using data to create a table:
+    Image Transformations
+
+    This app allows you to apply different transformations to images.
 """
 
 import os
+from matplotlib.style import available
 import streamlit as st
 from PIL import Image
-from main import (
-    enhance_contrast,
+from transformations import (
     get_histogram,
-    get_histogram_from_file,
-    turn_to_grayscale,
-    apply_umbral_transformation,
-    apply_inverse_transformation,
+    enhance_contrast,
+    grayscale,
+    umbral,
+    invert,
+    equalization,
+    media_filter,
+    median_filter,
+    apply_prewitt,
+    apply_kirsch,
+    apply_sobel,
+    cany,
 )
-from equalization import equalization
-from conv_filters import conv_filter, median_filter
-from kernels import apply_prewitt, apply_kirsch, apply_sobel
-from edge_detection_cv import cany
+
 
 # Get the list of images
 images = os.listdir("./input")
 images.sort()
+images.insert(0, "Select an image")
 
 # Title
-st.title("Image Transformations 🗻 => 🌋")
+st.title("Image Transformations 🌋")
+
+st.markdown("---")
 
 # Create a list of the available transformation options and map them to their respective functions
 transformation_options = {
-    "contrast": enhance_contrast,  # ✅
+    "Select a Transformation": None,
+    "Enhance Contrast": enhance_contrast,
     # "histogram": get_histogram,  #
-    "grayscale": turn_to_grayscale,  # ✅
-    "umbral": apply_umbral_transformation,  # ✅
-    "inverse": apply_inverse_transformation,  # ✅
-    "equalization": equalization,  # ✅
-    "convolution": conv_filter,  # ✅
-    "median": median_filter,  # ✅
-    "prewitt": apply_prewitt,  # ✅
-    "kirsch": apply_kirsch,  # ✅
-    "sobel": apply_sobel,  # ✅
-    "canny": cany,  # ✅
+    "Turn to Gray Scale": grayscale,
+    "Umbral Binarization": umbral,
+    "Invert Color": invert,
+    "Luminance Equalization": equalization,
+    "Noise Filter (Media)": media_filter,
+    "Noise Filter (Median)": median_filter,
+    "Edge Detection (Prewitt)": apply_prewitt,
+    "Edge Detection (Kirsch)": apply_kirsch,
+    "Edge Detection (Sobel)": apply_sobel,
+    "Edge Detection (Canny)": cany,
 }
 
-# Create a selectbox for image selection
-selected_image = st.selectbox("Select an image for transformation", images)
-selected_transformation = st.selectbox(
-    "Select a transformation", transformation_options.keys()
-)
+colOriginal, colTransformed = st.columns(2)
 
-if selected_transformation.lower() == "umbral":
-    umbral_value = st.slider("Umbral value", 0, 255, 127)
+img = None
 
-# Load the selected image
-img = Image.open(f"./input/{selected_image}")
+with colOriginal:
+    # Field for uploading an image
+    uploaded_file = st.file_uploader("Upload an image for transformation")
+    selected_image = st.selectbox("Or elect an example image from the gallery", images)
 
-# Apply the selected image transformation algorithm
-if st.button("Transform"):
-    # Get the selected transformation
-    transformation = transformation_options[selected_transformation]
+    st.subheader("Original Image")
 
-    if selected_transformation.lower() == "convolution":
-        transformed_img = transformation(f"./input/{selected_image}")
-        # Create two columns
-        col1, col2 = st.columns(2)
+    # Create a selectbox for image selection
+    if selected_image:
+        if selected_image != "Select an image":
+            st.image(f"./input/{selected_image}", caption=selected_image)
+            img = Image.open(f"./input/{selected_image}")
 
-        # Display the original image in the first column
-        with col1:
-            st.image(img, caption="Original Image")
+    if uploaded_file is not None:
+        st.image(uploaded_file, caption="Uploaded Image")
+        img = Image.open(uploaded_file)
 
-        # Display the transformed image in the second column
-        with col2:
-            st.image(transformed_img, caption="Transformed Image")
+    if img is not None:
+        original_histogram = get_histogram(img)
+        st.bar_chart(original_histogram)
 
-    elif selected_transformation.lower() == "median":
-        transformed_img = transformation(f"./input/{selected_image}")
+with colTransformed:
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
 
-        # Create two columns
-        col1, col2 = st.columns(2)
+    selected_transformation = st.selectbox(
+        "Select a transformation", transformation_options.keys()
+    )
 
-        # Display the original image in the first column
-        with col1:
-            st.image(img, caption="Original Image")
+    if selected_transformation == "Umbral Binarization":
+        umbral_value = st.slider("Umbral value", 0, 255, 127)
 
-        # Display the transformed image in the second column
-        with col2:
-            st.image(transformed_img, caption="Transformed Image")
+    tButton = None
 
-    elif selected_transformation.lower() == "prewitt":
-        transformed_img = transformation(f"./input/{selected_image}")
-
-        # Create two columns
-        col1, col2 = st.columns(2)
-
-        # Display the original image in the first column
-        with col1:
-            st.image(img, caption="Original Image")
-
-        # Display the transformed image in the second column
-        with col2:
-            for key, value in transformed_img.items():
-                st.image(value, caption=f"Transformed Image {key}")
-
-    elif selected_transformation.lower() == "kirsch":
-        transformed_img = transformation(f"./input/{selected_image}")
-
-        # Create two columns
-        col1, col2 = st.columns(2)
-
-        # Display the original image in the first column
-        with col1:
-            st.image(img, caption="Original Image")
-
-        # Display the transformed image in the second column
-        with col2:
-            for key, value in transformed_img.items():
-                st.image(value, caption=f"Transformed Image {key}")
-
-    elif selected_transformation.lower() == "sobel":
-        transformed_img = transformation(f"./input/{selected_image}")
-
-        # Create two columns
-        col1, col2 = st.columns(2)
-
-        # Display the original image in the first column
-        with col1:
-            st.image(img, caption="Original Image")
-
-        # Display the transformed image in the second column
-        with col2:
-            for key, value in transformed_img.items():
-                st.image(value, caption=f"Transformed Image {key}")
-
-    elif selected_transformation.lower() == "canny":
-        transformed_img = transformation(f"./input/{selected_image}")
-
-        # Create two columns
-        col1, col2 = st.columns(2)
-
-        # Display the original image in the first column
-        with col1:
-            st.image(img, caption="Original Image")
-
-        # Display the transformed image in the second column
-        with col2:
-            st.image(transformed_img, caption="Transformed Image")
-
+    if img is None:
+        tButton = st.button(
+            "Transform", type="primary", use_container_width=True, disabled=True
+        )
+    elif img is not None and selected_transformation == "Select a Transformation":
+        tButton = st.button(
+            "Transform", type="primary", use_container_width=True, disabled=True
+        )
     else:
-        if selected_transformation.lower() == "umbral":
-            transformed_img = transformation(f"./input/{selected_image}", umbral_value)
+        tButton = st.button("Transform", type="primary", use_container_width=True)
+
+    st.subheader("Transformed Image")
+    # Apply the selected image transformation algorithm
+    if tButton:
+        # Get the selected transformation
+        transformation = transformation_options[selected_transformation]
+        transformed_img = transformation(img)
+
+        if isinstance(transformed_img, dict):
+            for key, value in transformed_img.items():
+                st.image(value, caption=f"Transformed Image {key}")
         else:
-            transformed_img = transformation(f"./input/{selected_image}")
-
-        original_histogram = get_histogram(f"./input/{selected_image}")
-        transformed_histogram = get_histogram_from_file(transformed_img)
-
-        # Create two columns
-        col1, col2 = st.columns(2)
-
-        # Display the original image in the first column
-        with col1:
-            st.image(img, caption="Original Image")
-
-        # Display the transformed image in the second column
-        with col2:
             st.image(transformed_img, caption="Transformed Image")
 
-        # * Histogram
-        # Create a histogram with the values of the selected image
-        col3, col4 = st.columns(2)
-
-        # Display the histogram in the first column
-        with col3:
-            st.bar_chart(original_histogram)
-            st.text("Original Histogram")
-
-        # Display the histogram in the second column
-        with col4:
+            transformed_histogram = get_histogram(transformed_img)
             st.bar_chart(transformed_histogram)
-            st.text("Transformed Histogram")
-
-    # Add a separator
-    st.markdown("---")
 
 # * Image Gallery
 # Create a gallery with all the images from the input folder
-st.subheader("Image Gallery")
+st.sidebar.subheader("Image Gallery")
 # Create a list to hold the columns
 columns = []
 
@@ -192,7 +127,9 @@ columns = []
 for i in range(0, len(images), 4):
     columns.extend(st.columns(4))
 
+available_images = os.listdir("./input")
+available_images.sort()
 # Display each image in a column
-for i, image in enumerate(images):
+for i, image in enumerate(available_images):
     with columns[i]:
-        st.image(f"./input/{image}", caption=image)
+        st.sidebar.image(f"./input/{image}", caption=image)
